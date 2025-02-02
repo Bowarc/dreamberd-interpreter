@@ -1,10 +1,7 @@
 use std::str::FromStr;
 
-mod lexer;
 
-pub struct SourceFile(std::path::PathBuf);
-
-fn read_env() -> SourceFile {
+fn read_env() -> std::path::PathBuf {
     use std::path::PathBuf;
     use std::{env::args, process::exit};
 
@@ -27,13 +24,13 @@ fn read_env() -> SourceFile {
         }
     };
 
-    SourceFile(path)
+    path
 }
 
 fn main() {
     let source = read_env();
 
-    let tokens = match lexer::scan(source) {
+    let tokens = match lexer::scan_file(source) {
         Ok(tokens) => tokens,
         Err(parser_error) => panic!("{parser_error}"),
     };

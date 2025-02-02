@@ -1,0 +1,10 @@
+[package]
+name = "lexer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+thiserror = "2.0.11"
+
+[dev-dependencies]
+insta = "1.42.1"

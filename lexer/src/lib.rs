@@ -1,7 +1,7 @@
 mod error;
 mod token;
 
-pub fn scan(source: super::SourceFile) -> Result<Vec<token::Token>, error::ParserError> {
+pub fn scan_file(source_path: std::path::PathBuf) -> Result<Vec<token::Token>, error::ParserError> {
     use std::{
         fmt::Write as _,
         fs::OpenOptions,
@@ -10,7 +10,7 @@ pub fn scan(source: super::SourceFile) -> Result<Vec<token::Token>, error::Parse
 
     let mut tokens = Vec::new();
 
-    let Ok(file) = OpenOptions::new().read(true).open(source.0) else {
+    let Ok(file) = OpenOptions::new().read(true).open(source_path) else {
         return Err(error::ParserError::SourceFileNotFound);
     };
 
@@ -26,7 +26,7 @@ pub fn scan(source: super::SourceFile) -> Result<Vec<token::Token>, error::Parse
 
         println!("Read {read}bytes");
 
-        tokens = match scan_one(&line) {
+        let line_tokens = match scan_one(&line) {
             Ok(tokens) => {
                 println!(
                     "{}",
@@ -42,6 +42,30 @@ pub fn scan(source: super::SourceFile) -> Result<Vec<token::Token>, error::Parse
                 break;
             }
         };
+
+        tokens.extend(line_tokens);
+    }
+
+    match &tokens[..5] {
+        [outer, token::Token::Space, inner, token::Token::Space, token::Token::Litteral(var_name)] =>
+        {
+            println!(
+                "Declaration of variable '{var_name}' with{} outer mutablility and with{} inner mutability",
+                if outer == &token::Token::Litteral(String::from("const")) {
+                    "out"
+                } else {
+                    ""
+                },
+                if inner == &token::Token::Litteral(String::from("const")) {
+                    "out"
+                } else {
+                    ""
+                }
+            )
+        }
+        a => {
+            println!("{a:?}")
+        }
     }
 
     Ok(tokens)
@@ -172,7 +196,7 @@ mod tests {
         assert_debug_snapshot!(scan_one("[{]}"));
 
         assert_debug_snapshot!(scan_one("\"Hello\\nWorld\""));
-        
+
         assert_debug_snapshot!(scan_one("00123"));
         assert_debug_snapshot!(scan_one("0001"));
 
