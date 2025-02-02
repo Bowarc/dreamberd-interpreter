@@ -1,0 +1,11 @@
+Scopes
+
+Ast ? idk if it's needed for interpreter
+
+'When' statement, which scope does it uses ? the one where it's defined or the one where it's triggered ?  
+'When' statement, triggers when a ref of the variable is changed ? 
+
+About negative lifetimes, we can
+- Reorganize the lines to put the line higher 
+- At runtime, when trying to access a variable but cannot find it,
+  check the rest of the scope for a negative lifetime variable definition

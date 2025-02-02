@@ -1,10 +1,12 @@
-use std::io::BufRead;
-
 mod error;
 mod token;
 
 pub fn scan(source: super::SourceFile) -> Result<Vec<token::Token>, error::ParserError> {
-    use std::{fmt::Write as _, fs::OpenOptions, io::BufReader};
+    use std::{
+        fmt::Write as _,
+        fs::OpenOptions,
+        io::{BufRead as _, BufReader},
+    };
 
     let mut tokens = Vec::new();
 
