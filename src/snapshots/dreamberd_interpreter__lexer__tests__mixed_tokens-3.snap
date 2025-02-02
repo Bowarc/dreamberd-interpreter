@@ -1,0 +1,38 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"if (x < 5) { return! }\")"
+---
+Ok(
+    [
+        Litteral(
+            "if",
+        ),
+        Space,
+        OpenParenthesis,
+        Litteral(
+            "x",
+        ),
+        Space,
+        LessThan,
+        Space,
+        Numeric(
+            [
+                5,
+            ],
+        ),
+        CloseParenthesis,
+        Space,
+        Litteral(
+            "{",
+        ),
+        Space,
+        Litteral(
+            "return",
+        ),
+        Bang,
+        Space,
+        Litteral(
+            "}",
+        ),
+    ],
+)

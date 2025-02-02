@@ -1,0 +1,11 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"\\t\\t\\t\")"
+---
+Ok(
+    [
+        Litteral(
+            "\t\t\t",
+        ),
+    ],
+)

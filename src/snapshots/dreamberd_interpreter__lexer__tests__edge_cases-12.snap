@@ -1,0 +1,16 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"[{]}\")"
+---
+Ok(
+    [
+        OpenBracket,
+        Litteral(
+            "{",
+        ),
+        CloseBracket,
+        Litteral(
+            "}",
+        ),
+    ],
+)

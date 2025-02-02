@@ -1,0 +1,14 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"@#$%^&*()\")"
+---
+Ok(
+    [
+        Litteral(
+            "@#$%^&",
+        ),
+        Multiply,
+        OpenParenthesis,
+        CloseParenthesis,
+    ],
+)

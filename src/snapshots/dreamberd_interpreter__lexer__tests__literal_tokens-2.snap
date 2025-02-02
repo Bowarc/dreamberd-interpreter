@@ -1,0 +1,11 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"world\")"
+---
+Ok(
+    [
+        Litteral(
+            "world",
+        ),
+    ],
+)

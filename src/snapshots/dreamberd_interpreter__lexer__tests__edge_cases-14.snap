@@ -1,0 +1,17 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"00123\")"
+---
+Ok(
+    [
+        Numeric(
+            [
+                0,
+                0,
+                1,
+                2,
+                3,
+            ],
+        ),
+    ],
+)

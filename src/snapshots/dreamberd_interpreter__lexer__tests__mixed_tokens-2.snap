@@ -1,0 +1,34 @@
+---
+source: src/lexer.rs
+expression: "scan_one(\"const x = 10 + 20!\")"
+---
+Ok(
+    [
+        Litteral(
+            "const",
+        ),
+        Space,
+        Litteral(
+            "x",
+        ),
+        Space,
+        Equal,
+        Space,
+        Numeric(
+            [
+                1,
+                0,
+            ],
+        ),
+        Space,
+        Plus,
+        Space,
+        Numeric(
+            [
+                2,
+                0,
+            ],
+        ),
+        Bang,
+    ],
+)
