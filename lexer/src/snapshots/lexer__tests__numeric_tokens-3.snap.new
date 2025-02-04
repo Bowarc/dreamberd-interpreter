@@ -1,0 +1,14 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 122
+expression: "scan_one(\"0\")"
+---
+Ok(
+    [
+        Numeric(
+            [
+                0,
+            ],
+        ),
+    ],
+)

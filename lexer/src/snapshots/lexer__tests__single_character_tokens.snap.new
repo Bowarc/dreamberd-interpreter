@@ -1,0 +1,10 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 100
+expression: "scan_one(\".\")"
+---
+Ok(
+    [
+        Dot,
+    ],
+)

@@ -1,0 +1,11 @@
+---
+source: lexer/tests/basic.rs
+expression: "scan_one(\"Hello\\x00World\")"
+---
+Ok(
+    [
+        Litteral(
+            "Hello\0World",
+        ),
+    ],
+)

@@ -1,0 +1,13 @@
+---
+source: lexer/tests/basic.rs
+expression: "scan_one(\"\\\"Hello\\\\nWorld\\\"\")"
+---
+Ok(
+    [
+        DoubleQuote,
+        Litteral(
+            "Hello\\nWorld",
+        ),
+        DoubleQuote,
+    ],
+)

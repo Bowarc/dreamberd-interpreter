@@ -1,0 +1,14 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 160
+expression: "scan_one(\"\\\"Hello\\\\nWorld\\\"\")"
+---
+Ok(
+    [
+        DoubleQuote,
+        Litteral(
+            "Hello\\nWorld",
+        ),
+        DoubleQuote,
+    ],
+)

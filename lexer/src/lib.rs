@@ -52,7 +52,7 @@ pub fn scan<T: std::io::Read>(input: T) -> Result<Vec<Token>, LexerError> {
 // But in dreamberd, """hi""" is a valid string, same as '''''hi''''', or even hi
 // coupled with the fact that you can redefine keywords,
 // i have no way to parse a string from just one line of context
-fn scan_one(line: &str) -> Result<Vec<Token>, LexerError> {
+pub fn scan_one(line: &str) -> Result<Vec<Token>, LexerError> {
     use Token;
 
     let mut tokens = Vec::new();

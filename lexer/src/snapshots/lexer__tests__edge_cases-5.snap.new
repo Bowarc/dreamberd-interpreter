@@ -1,0 +1,15 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 147
+expression: "scan_one(\"@#$%^&*()\")"
+---
+Ok(
+    [
+        Litteral(
+            "@#$%^&",
+        ),
+        Multiply,
+        OpenParenthesis,
+        CloseParenthesis,
+    ],
+)

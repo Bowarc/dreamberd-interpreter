@@ -1,0 +1,11 @@
+---
+source: lexer/tests/basic.rs
+expression: "scan_one(\"...\")"
+---
+Ok(
+    [
+        Dot,
+        Dot,
+        Dot,
+    ],
+)

@@ -1,0 +1,12 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 151
+expression: "scan_one(\"!!!\")"
+---
+Ok(
+    [
+        Bang,
+        Bang,
+        Bang,
+    ],
+)

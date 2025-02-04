@@ -1,0 +1,10 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 105
+expression: "scan_one(\"]\")"
+---
+Ok(
+    [
+        CloseBracket,
+    ],
+)

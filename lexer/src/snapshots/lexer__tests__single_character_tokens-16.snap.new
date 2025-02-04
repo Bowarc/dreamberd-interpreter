@@ -1,0 +1,10 @@
+---
+source: lexer/src/lib.rs
+assertion_line: 115
+expression: "scan_one(\"*\")"
+---
+Ok(
+    [
+        Multiply,
+    ],
+)

@@ -1,0 +1,15 @@
+---
+source: lexer/tests/basic.rs
+expression: "scan_one(\"123\")"
+---
+Ok(
+    [
+        Numeric(
+            [
+                1,
+                2,
+                3,
+            ],
+        ),
+    ],
+)

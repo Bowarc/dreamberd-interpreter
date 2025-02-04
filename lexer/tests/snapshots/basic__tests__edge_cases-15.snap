@@ -1,0 +1,16 @@
+---
+source: lexer/tests/basic.rs
+expression: "scan_one(\"0001\")"
+---
+Ok(
+    [
+        Numeric(
+            [
+                0,
+                0,
+                0,
+                1,
+            ],
+        ),
+    ],
+)

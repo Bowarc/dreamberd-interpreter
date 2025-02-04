@@ -1,0 +1,15 @@
+---
+source: lexer/tests/basic.rs
+expression: "scan_one(\"foo bar\")"
+---
+Ok(
+    [
+        Litteral(
+            "foo",
+        ),
+        Space,
+        Litteral(
+            "bar",
+        ),
+    ],
+)
