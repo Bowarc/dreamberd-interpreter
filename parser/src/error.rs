@@ -13,5 +13,8 @@ pub enum ParserError{
     UnexpectedToken{
         expected: String, // Make sure they are lexer::Token variants :p
         got: String,
-    }
+    },
+
+    #[error("Int value '{0}' overflowed")]
+    IntValueTooLarge(String)
 }

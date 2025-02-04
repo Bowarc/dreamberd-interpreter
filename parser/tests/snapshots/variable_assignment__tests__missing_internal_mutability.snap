@@ -1,0 +1,40 @@
+---
+source: parser/tests/variable_assignment.rs
+expression: "(tokens, parsed)"
+---
+(
+    [
+        Litteral(
+            "var",
+        ),
+        Space,
+        Litteral(
+            "cool",
+        ),
+        Underscore,
+        Litteral(
+            "var",
+        ),
+        Underscore,
+        Litteral(
+            "name",
+        ),
+        Space,
+        Equal,
+        Space,
+        Numeric(
+            [
+                1,
+                5,
+            ],
+        ),
+        Bang,
+        EOF,
+    ],
+    Err(
+        UnexpectedToken {
+            expected: "one of `const`,`var`",
+            got: "Litteral",
+        },
+    ),
+)

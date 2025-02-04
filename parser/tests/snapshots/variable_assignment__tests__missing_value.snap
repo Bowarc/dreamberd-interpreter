@@ -1,0 +1,39 @@
+---
+source: parser/tests/variable_assignment.rs
+expression: "(tokens, parsed)"
+---
+(
+    [
+        Litteral(
+            "var",
+        ),
+        Space,
+        Litteral(
+            "const",
+        ),
+        Space,
+        Litteral(
+            "name",
+        ),
+        Space,
+        Equal,
+        Space,
+        Bang,
+        EOF,
+    ],
+    Ok(
+        AssignmentExpression {
+            outer_mutability: true,
+            inner_mutability: false,
+            global: false,
+            global_mutability: false,
+            name: "name",
+            _type: String,
+            value: Litteral(
+                String(
+                    "",
+                ),
+            ),
+        },
+    ),
+)

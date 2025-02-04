@@ -115,10 +115,10 @@ fn keyword(ctx: &mut ParserContext, expected_keyword: Keyword) -> bool {
     true
 }
 
-fn parse_var_asignment<'a>(
-    ctx: &'a mut ParserContext,
+pub fn parse_var_assignment(
+    ctx: &mut ParserContext,
 ) -> Result<ast::AssignmentExpression, ParserError> {
-let outer_mutability = variable_mutability(ctx)?;
+    let outer_mutability = variable_mutability(ctx)?;
     next_token!(ctx, lexer::Token::Space)?;
     let inner_mutability = variable_mutability(ctx)?;
     next_token!(ctx, lexer::Token::Space)?;
@@ -148,7 +148,17 @@ let outer_mutability = variable_mutability(ctx)?;
         next_token!(ctx, lexer::Token::Space)?;
     }
 
-    let name = unpack_lexer_litteral(ctx)?;
+    let mut name = unpack_lexer_litteral(ctx)?;
+    loop {
+        match ctx.next() {
+            lexer::Token::Underscore => name.push('_'),
+            lexer::Token::Litteral(s) => name.push_str(&s),
+            _ => {
+                ctx.backtrack();
+                break;
+            }
+        }
+    }
     next_token!(ctx, lexer::Token::Space)?;
 
     next_token!(ctx, lexer::Token::Equal)?;
@@ -167,7 +177,31 @@ let outer_mutability = variable_mutability(ctx)?;
             types::DreamberdType::Unknown
         }
     };
-    next_token!(ctx, lexer::Token::Bang)?;
+
+    {
+        match ctx.next() {
+            lexer::Token::Bang => (),
+            lexer::Token::QuestionMark => (),
+            got => {
+                return Err(ParserError::UnexpectedToken {
+                    expected: {
+                        let list = vec!["!", "?"];
+                        format!(
+                            "one of {}",
+                            list.into_iter()
+                                .fold(String::new(), |mut output, s| {
+                                    use std::fmt::Write as _;
+                                    let _ = write!(output, "`{s}`,");
+                                    output
+                                })
+                                .trim_end_matches(",")
+                        )
+                    },
+                    got: got.variant_name().to_string(),
+                });
+            }
+        }
+    }
 
     Ok(ast::AssignmentExpression {
         outer_mutability,
@@ -198,11 +232,55 @@ pub fn parse_litteral_expression(ctx: &mut ParserContext) -> Result<ast::Littera
 }
 
 pub fn parse_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, ParserError> {
+    if let Ok(int) = parse_int_litteral(ctx) {
+        return Ok(int);
+    }
+
     parse_string_litteral(ctx)
 }
 
 pub fn parse_int_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, ParserError> {
-    Ok(ast::Litteral::Int(0))
+    // eat_many!(ctx, lexer::Token::Space); ??
+
+    let neg = next_token!(ctx, lexer::Token::Minus).is_ok();
+
+    let mut digits = match next_token!(ctx, lexer::Token::Numeric(..))? {
+        lexer::Token::Numeric(digits) => digits,
+        _ => unreachable!(),
+    };
+
+    loop {
+        let next = ctx.next();
+
+        match next {
+            lexer::Token::Numeric(vec) => digits.extend_from_slice(&vec),
+            lexer::Token::Underscore => (), // just ignore, they are here for the user to feel better
+            _ => {
+                ctx.backtrack();
+                break;
+            }
+        }
+    }
+
+    let n = digits.iter().try_fold(0i64, |acc, d| {
+        let (acc, overflowed) = acc.overflowing_mul(10);
+        if overflowed {
+            return Err(ParserError::IntValueTooLarge(
+                digits.iter().map(ToString::to_string).collect::<String>(),
+            ));
+        }
+
+        let (acc, overflowed) = acc.overflowing_add((*d).into());
+        if overflowed {
+            return Err(ParserError::IntValueTooLarge(
+                digits.iter().map(ToString::to_string).collect::<String>(),
+            ));
+        }
+
+        Ok(acc)
+    })?;
+
+    Ok(ast::Litteral::Int(if neg { -n } else { n }))
 }
 pub fn parse_float_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, ParserError> {
     Ok(ast::Litteral::Float(0.0))
@@ -213,10 +291,8 @@ pub fn parse_string_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, P
     let mut text = String::new();
 
     loop {
-        let next = ctx.next();
-
-        // This adds characters to the string
-        match next {
+        match ctx.next() {
+            // This adds characters to the string
             lexer::Token::Dot => {
                 text.push('.');
                 continue;
@@ -231,6 +307,10 @@ pub fn parse_string_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, P
             }
             lexer::Token::Space => {
                 text.push(' ');
+                continue;
+            }
+            lexer::Token::Underscore => {
+                text.push('_');
                 continue;
             }
             lexer::Token::OpenBracket => {
@@ -298,21 +378,22 @@ pub fn parse_string_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, P
             }
 
             // Double meaning
-            lexer::Token::Bang if ctx.peek() != lexer::Token::NewLine => {
+            lexer::Token::Bang if ![lexer::Token::NewLine, lexer::Token::EOF].contains(&ctx.peek()) =>  {
                 text.push('!');
                 continue;
             }
-            lexer::Token::QuestionMark if ctx.peek() != lexer::Token::NewLine => {
+            lexer::Token::QuestionMark if ![lexer::Token::NewLine, lexer::Token::EOF].contains(&ctx.peek()) => {
                 text.push('?');
                 continue;
             }
 
             // Unwanted
-            lexer::Token::Bang | lexer::Token::QuestionMark => {
+            lexer::Token::Bang | lexer::Token::QuestionMark | lexer::Token::OpenBrace | lexer::Token::CloseBrace  => {
                 // This was an unclosed string, and we reached the end of the line
                 ctx.backtrack();
                 break;
             }
+
 
             // Should not be in a string
             lexer::Token::NewLine // Quick note on the newline, it's an actual new line,
@@ -337,7 +418,7 @@ pub fn parse_bool_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, Par
 }
 
 pub fn parse(tokens: &[lexer::Token]) -> Result<Statement, ParserError> {
-    let mut context = ParserContext::new(tokens);
+    let mut _context = ParserContext::new(tokens);
 
     Ok(Statement::Empty)
 }

@@ -1,0 +1,93 @@
+---
+source: parser/tests/variable_assignment.rs
+expression: "(tokens, parsed)"
+---
+(
+    [
+        Litteral(
+            "const",
+        ),
+        Space,
+        Litteral(
+            "const",
+        ),
+        Space,
+        Litteral(
+            "cool",
+        ),
+        Underscore,
+        Litteral(
+            "var",
+        ),
+        Underscore,
+        Litteral(
+            "name",
+        ),
+        Space,
+        Equal,
+        Space,
+        Numeric(
+            [
+                5,
+            ],
+        ),
+        Underscore,
+        Numeric(
+            [
+                5,
+                4,
+                7,
+            ],
+        ),
+        Underscore,
+        Numeric(
+            [
+                9,
+                7,
+                5,
+            ],
+        ),
+        Underscore,
+        Numeric(
+            [
+                7,
+                5,
+                7,
+            ],
+        ),
+        Underscore,
+        Numeric(
+            [
+                0,
+                8,
+                7,
+                8,
+            ],
+        ),
+        Underscore,
+        Numeric(
+            [
+                7,
+                8,
+                0,
+            ],
+        ),
+        Bang,
+        EOF,
+    ],
+    Ok(
+        AssignmentExpression {
+            outer_mutability: false,
+            inner_mutability: false,
+            global: false,
+            global_mutability: false,
+            name: "cool_var_name",
+            _type: Int,
+            value: Litteral(
+                Int(
+                    55479757570878780,
+                ),
+            ),
+        },
+    ),
+)
