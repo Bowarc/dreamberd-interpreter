@@ -159,6 +159,36 @@ pub fn parse_var_assignment(
             }
         }
     }
+
+
+    // Optional type annotation
+    'colon: {
+        // optional
+        let optionnal_space1 = next_token!(ctx, lexer::Token::Space).is_ok();
+
+        if ctx.peek() != lexer::Token::Colon{
+            if optionnal_space1{
+                ctx.backtrack();
+            }
+
+            break 'colon;
+        }
+        ctx.advance();
+
+        let _ = next_token!(ctx, lexer::Token::Space);
+
+        // Hard error because we're too far into the branch to actually backtrack,
+        // if there is a colon after the variable name, there is no path other than this one
+        unpack_lexer_litteral(ctx)?;
+
+        // You can even have numbers in them, so we need to eat in a loop,
+        // in case of weird things like int9float2
+
+        eat_many!(ctx, lexer::Token::Litteral(..), lexer::Token::Numeric(..), lexer::Token::Underscore);
+        
+        // Technical info: Type annotations don't do anything, but they help some people to feel more comfortable.
+    }
+
     next_token!(ctx, lexer::Token::Space)?;
 
     next_token!(ctx, lexer::Token::Equal)?;
@@ -291,60 +321,27 @@ pub fn parse_string_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, P
     let mut text = String::new();
 
     loop {
-        match ctx.next() {
+        let next = ctx.next();
+        match next {
             // This adds characters to the string
-            lexer::Token::Dot => {
-                text.push('.');
-                continue;
-            }
-            lexer::Token::Equal => {
-                text.push('=');
-                continue;
-            }
-            lexer::Token::Comma => {
-                text.push(',');
-                continue;
-            }
-            lexer::Token::Space => {
-                text.push(' ');
-                continue;
-            }
-            lexer::Token::Underscore => {
-                text.push('_');
-                continue;
-            }
-            lexer::Token::OpenBracket => {
-                text.push('[');
-                continue;
-            }
-            lexer::Token::OpenParenthesis => {
-                text.push('(');
-                continue;
-            }
-            lexer::Token::LessThan => {
-                text.push('<');
-                continue;
-            }
-            lexer::Token::GreaterThan => {
-                text.push('>');
-                continue;
-            }
-            lexer::Token::Plus => {
-                text.push('+');
-                continue;
-            }
-            lexer::Token::Minus => {
-                text.push('-');
-                continue;
-            }
-            lexer::Token::Divide => {
-                text.push('/');
-                continue;
-            }
-            lexer::Token::Multiply => {
-                text.push('*');
-                continue;
-            }
+            lexer::Token::Dot |
+            lexer::Token::Equal |
+            lexer::Token::Comma |
+            lexer::Token::Space |
+            lexer::Token::Underscore |
+            lexer::Token::OpenBracket |
+            lexer::Token::OpenParenthesis |
+            lexer::Token::LessThan |
+            lexer::Token::GreaterThan |
+            lexer::Token::Plus |
+            lexer::Token::Minus |
+            lexer::Token::Divide |
+            lexer::Token::Multiply | 
+            lexer::Token::Colon => {
+                let c = char::try_from(next).unwrap();
+                text.push(c);
+                continue
+            },
             lexer::Token::Numeric(vec) => {
                 text.push_str(&vec.iter().fold(String::new(), |mut output, n| {
                     use std::fmt::Write as _;

@@ -10,6 +10,7 @@ pub enum Token {
     Comma,
     Space,
     Underscore,
+    Colon,
 
     OpenBracket,
     CloseBracket,
@@ -49,6 +50,7 @@ impl std::convert::TryFrom<char> for Token {
             ',' => Ok(Token::Comma),
             ' ' => Ok(Token::Space),
             '_' => Ok(Token::Underscore),
+            ':' => Ok(Token::Colon),
 
             '[' => Ok(Token::OpenBracket),
             ']' => Ok(Token::CloseBracket),
@@ -86,11 +88,15 @@ impl TryFrom<Token> for char {
             Token::Comma => Ok(','),
             Token::Space => Ok(' '),
             Token::Underscore => Ok('_'),
+            Token::Colon => Ok(':'),
+
 
             Token::OpenBracket => Ok('['),
             Token::CloseBracket => Ok(']'),
             Token::OpenParenthesis => Ok('('),
             Token::CloseParenthesis => Ok(')'),
+            Token::OpenBrace => Ok('{'),
+            Token::CloseBrace => Ok('}'),
 
             Token::SingleQuote => Ok('\''),
             Token::DoubleQuote => Ok('"'),
