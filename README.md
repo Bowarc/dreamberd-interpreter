@@ -5,8 +5,9 @@
 
 ## Roadmap
 
-- [ ] Lexer
-- ?
+- [x] Simple lexer
+- [ ] AST from lexer output
+- [ ] Runner ?
 
 ## How to use
 ```console

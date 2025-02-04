@@ -1,9 +1,8 @@
-use std::str::FromStr;
-
+mod runner;
+mod scopes;
 
 fn read_env() -> std::path::PathBuf {
-    use std::path::PathBuf;
-    use std::{env::args, process::exit};
+    use std::{env::args, path::PathBuf, process::exit, str::FromStr};
 
     let argv = args().collect::<Vec<_>>();
     let argc = argv.len();
@@ -30,7 +29,12 @@ fn read_env() -> std::path::PathBuf {
 fn main() {
     let source = read_env();
 
-    let tokens = match lexer::scan_file(source) {
+    let lexer_tokens = match lexer::scan_file(source) {
+        Ok(tokens) => tokens,
+        Err(lexer_error) => panic!("{lexer_error}"),
+    };
+
+    let _parser_tokens = match parser::parse(&lexer_tokens) {
         Ok(tokens) => tokens,
         Err(parser_error) => panic!("{parser_error}"),
     };

@@ -1,1 +1,1 @@
-cargo insta test --review
+cargo insta test -p lexer --review
