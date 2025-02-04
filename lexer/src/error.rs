@@ -1,5 +1,5 @@
 #[derive(Debug, thiserror::Error)]
-pub enum ParserError{
+pub enum LexerError{
     #[error("Source file not found")]
     SourceFileNotFound
 }
