@@ -1,0 +1,22 @@
+---
+source: parser/tests/litteral_string.rs
+expression: "(tokens, parsed)"
+---
+(
+    [
+        Litteral(
+            "unmatched",
+        ),
+        Space,
+        Litteral(
+            "quotes",
+        ),
+        DoubleQuote,
+        EOF,
+    ],
+    Ok(
+        String(
+            "unmatched quotes",
+        ),
+    ),
+)

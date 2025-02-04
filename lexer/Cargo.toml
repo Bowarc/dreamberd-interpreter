@@ -8,4 +8,4 @@ thiserror = "2.0.11"
 enum_variant_name = { git = "https://github.com/bowarc/crates", package = "enum_variant_name" }
 
 [dev-dependencies]
-insta = "1.42.1"
+insta.workspace = true

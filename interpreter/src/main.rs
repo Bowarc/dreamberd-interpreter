@@ -27,9 +27,16 @@ fn read_env() -> std::path::PathBuf {
 }
 
 fn main() {
-    let source = read_env();
+    use std::fs::OpenOptions;
+    use std::process::exit;
+    let path = read_env();
 
-    let lexer_tokens = match lexer::scan_file(source) {
+    let Ok(source_file) = OpenOptions::new().read(true).open(&path) else{
+        eprintln!("Failed to open file at '{path:?}'");
+        exit(1);
+    };
+
+    let lexer_tokens = match lexer::scan(source_file) {
         Ok(tokens) => tokens,
         Err(lexer_error) => panic!("{lexer_error}"),
     };

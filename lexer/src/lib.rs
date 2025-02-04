@@ -4,20 +4,14 @@ mod token;
 pub use error::LexerError;
 pub use token::Token;
 
-pub fn scan_file(source_path: std::path::PathBuf) -> Result<Vec<Token>, LexerError> {
+pub fn scan<T: std::io::Read>(input: T) -> Result<Vec<Token>, LexerError> {
     use std::{
         fmt::Write as _,
-        fs::OpenOptions,
         io::{BufRead as _, BufReader},
     };
+    let mut reader = BufReader::new(input);
 
     let mut tokens = Vec::new();
-
-    let Ok(file) = OpenOptions::new().read(true).open(source_path) else {
-        return Err(LexerError::SourceFileNotFound);
-    };
-
-    let mut reader = BufReader::new(file);
 
     loop {
         let mut line = String::new();
@@ -64,7 +58,7 @@ fn scan_one(line: &str) -> Result<Vec<Token>, LexerError> {
     let mut tokens = Vec::new();
 
     for c in line.chars() {
-        // Basic single character immutable tokens like '"!, etc.. 
+        // Basic single character immutable tokens like '"!, etc..
         if let Ok(token) = Token::try_from(c) {
             tokens.push(token);
             continue;
@@ -195,4 +189,3 @@ mod tests {
 //         println!("{a:?}")
 //     }
 // }
-

@@ -1,12 +1,13 @@
-mod ast;
+pub mod ast;
 mod context;
 mod error;
 mod keyword;
 
 pub use ast::Statement;
-use context::ParserContext;
 pub use error::ParserError;
 pub use keyword::Keyword;
+/* I don't like it being public, but tests needs it */
+pub use context::ParserContext;
 
 // Returns Some(token) only when the next token is of the give variant
 macro_rules! next_token {
@@ -117,7 +118,7 @@ fn keyword(ctx: &mut ParserContext, expected_keyword: Keyword) -> bool {
 fn parse_var_asignment<'a>(
     ctx: &'a mut ParserContext,
 ) -> Result<ast::AssignmentExpression, ParserError> {
-    let outer_mutability = variable_mutability(ctx)?;
+let outer_mutability = variable_mutability(ctx)?;
     next_token!(ctx, lexer::Token::Space)?;
     let inner_mutability = variable_mutability(ctx)?;
     next_token!(ctx, lexer::Token::Space)?;
@@ -339,24 +340,4 @@ pub fn parse(tokens: &[lexer::Token]) -> Result<Statement, ParserError> {
     let mut context = ParserContext::new(tokens);
 
     Ok(Statement::Empty)
-}
-
-#[test]
-fn test() {
-    use std::str::FromStr as _;
-
-    // let tokens = lexer::scan_file(
-    //     std::path::PathBuf::from_str("../db_examples/semantic-naming.db").unwrap(),
-    // )
-    // .unwrap();
-    let tokens =
-        lexer::scan_file(std::path::PathBuf::from_str("../db_examples/strings/quotes.db").unwrap())
-            .unwrap();
-
-    let mut ctx = ParserContext::new(&tokens);
-
-    // next_token!(ctx, lexer::Token::Numeric(_)).unwrap();
-
-    println!("{:#?}", parse_var_asignment(&mut ctx));
-    println!("{ctx:?}");
 }

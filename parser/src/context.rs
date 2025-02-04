@@ -49,7 +49,8 @@ impl<'a> ParserContext<'a> {
             self.index = Some(0);
             self.peek_index = self.index;
         } else {
-            *self.index.as_mut().unwrap() -= 1;
+            let (new, overflowed) = self.index.as_mut().unwrap().overflowing_sub(1);
+            self.index = if overflowed { None } else { Some(new) };
             self.peek_index = self.index;
         }
         println!("backtracking ({:?} -> {:?})", old, self.index);

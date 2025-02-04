@@ -4,5 +4,8 @@ members = [
   "lexer",
   "interpreter",
   "memory", "types", "parser",
-  
 ]
+
+
+[workspace.dependencies]
+insta = "1.42.1"

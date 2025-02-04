@@ -1,0 +1,28 @@
+---
+source: parser/tests/litteral_string.rs
+expression: "(tokens, parsed)"
+---
+(
+    [
+        DoubleQuote,
+        DoubleQuote,
+        DoubleQuote,
+        Litteral(
+            "Mutliple",
+        ),
+        Space,
+        Litteral(
+            "quotes",
+        ),
+        DoubleQuote,
+        DoubleQuote,
+        DoubleQuote,
+        DoubleQuote,
+        EOF,
+    ],
+    Ok(
+        String(
+            "Mutliple quotes",
+        ),
+    ),
+)
