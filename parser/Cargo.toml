@@ -1,0 +1,10 @@
+[package]
+name = "parser"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lexer = { path = "../lexer" }
+types = { path = "../types" }
+thiserror = "2.0.11"
+regex = "1.11.1"
