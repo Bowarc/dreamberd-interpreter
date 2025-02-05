@@ -69,7 +69,7 @@ fn variable_mutability(ctx: &mut ParserContext) -> Result<bool, ParserError> {
     }
 }
 
-// eats any number of token as long as it matches the given on
+// eats any number of token as long as it matches the given ones
 macro_rules! eat_many {
     ($ctx:ident, $($expected:pat),*) => {{
         let mut count = 0u32;
