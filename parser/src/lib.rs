@@ -350,8 +350,11 @@ pub fn parse_string_litteral(ctx: &mut ParserContext) -> Result<ast::Litteral, P
                 }));
                 continue;
             }
-            lexer::Token::Litteral(s) => text.push_str(&s),
-
+            lexer::Token::Litteral(s) => {
+                text.push_str(&s);
+                continue
+            },
+            
             // Can cause issues
             lexer::Token::CloseBracket => {
                 /*
